@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Glosario Interactivo Ensamblador</title>
+
+<style>
+body{
+font-family:'Segoe UI';
+margin:0;
+background:#fffafc;
+}
+
+header{
+background:#f8c8dc;
+padding:20px;
+text-align:center;
+color:#4a2c40;
+}
+
+.container{display:flex;height:90vh;}
+
+.menu{
+width:25%;
+background:#e0bbf9;
+padding:15px;
+}
+
+.menu button{
+width:100%;
+margin:10px 0;
+padding:14px;
+border:none;
+border-radius:15px;
+background:#ffc8dd;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+.menu button:hover{
+transform:scale(1.05);
+background:#f8edeb;
+}
+
+.content{
+width:75%;
+padding:20px;
+overflow:auto;
+}
+
+.card{
+padding:20px;
+border-radius:20px;
+box-shadow:0px 5px 12px rgba(0,0,0,0.15);
+}
+
+.arit{background:#fff3b0;}
+.ctrl{background:#cdb4db;}
+.pila{background:#c7f9cc;}
+.log{background:#a2d2ff;}
+.dat{background:#ffc8dd;}
+.biblio{background:#e2ece9;}
+
+.code{
+background:#eee;
+padding:10px;
+border-radius:10px;
+font-family:monospace;
+}
+
+.back{
+margin-bottom:15px;
+padding:10px 15px;
+border:none;
+border-radius:12px;
+background:#bde0fe;
+cursor:pointer;
+font-weight:bold;
+}
+
+.opciones button{
+display:block;
+width:100%;
+margin:8px 0;
+padding:14px;
+border:none;
+border-radius:15px;
+background:#ffffff;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+.opciones button:hover{
+transform:scale(1.05);
+background:#ffe5ec;
+}
+</style>
+
+<script>
+let categoriaActual = "";
+
+function mostrar(html){
+document.getElementById("contenido").innerHTML = html;
+}
+
+function setCategoria(cat,html){
+categoriaActual = cat;
+mostrar(html);
+}
+
+function regresar(){
+if(categoriaActual==="arit") mostrar(menuArit);
+if(categoriaActual==="ctrl") mostrar(menuCtrl);
+if(categoriaActual==="pila") mostrar(menuPila);
+if(categoriaActual==="log") mostrar(menuLog);
+if(categoriaActual==="dat") mostrar(menuDat);
+}
+</script>
+
+</head>
+
+<body>
+
+<header>
+<h1>Glosario Interactivo de Lenguaje Ensamblador</h1>
+<p>Aplicando IEEE 610.12</p>
+</header>
+
+<div class="container">
+
+<div class="menu">
+<button onclick="setCategoria('arit',menuArit)">Aritméticas</button>
+<button onclick="setCategoria('ctrl',menuCtrl)">Control de flujo</button>
+<button onclick="setCategoria('pila',menuPila)">Pila</button>
+<button onclick="setCategoria('log',menuLog)">Lógicas</button>
+<button onclick="setCategoria('dat',menuDat)">Datos</button>
+<button onclick="mostrar(biblio)">Bibliografía</button>
+</div>
+
+<div class="content">
+<div id="contenido" class="card">
+<h2>Bienvenido</h2>
+Selecciona una categoría.
+</div>
+</div>
+
+</div>
+
+<script>
+
+/* MENÚS */
+var menuArit = `<div class="card arit"><h2>Aritméticas</h2><div class="opciones">
+<button onclick="mostrar(add)">ADD</button>
+<button onclick="mostrar(sub)">SUB</button>
+<button onclick="mostrar(inc)">INC</button>
+<button onclick="mostrar(dec)">DEC</button>
+<button onclick="mostrar(mul)">MUL</button>
+<button onclick="mostrar(divi)">DIV</button>
+</div></div>`;
+
+var menuCtrl = `<div class="card ctrl"><h2>Control de flujo</h2><div class="opciones">
+<button onclick="mostrar(jmp)">JMP</button>
+<button onclick="mostrar(je)">JE</button>
+<button onclick="mostrar(jne)">JNE</button>
+<button onclick="mostrar(loop)">LOOP</button>
+</div></div>`;
+
+var menuPila = `<div class="card pila"><h2>Pila</h2><div class="opciones">
+<button onclick="mostrar(push)">PUSH</button>
+<button onclick="mostrar(pop)">POP</button>
+<button onclick="mostrar(call)">CALL</button>
+<button onclick="mostrar(ret)">RET</button>
+</div></div>`;
+
+var menuLog = `<div class="card log"><h2>Lógicas</h2><div class="opciones">
+<button onclick="mostrar(andd)">AND</button>
+<button onclick="mostrar(orr)">OR</button>
+<button onclick="mostrar(xor)">XOR</button>
+<button onclick="mostrar(nott)">NOT</button>
+</div></div>`;
+
+var menuDat = `<div class="card dat"><h2>Datos</h2><div class="opciones">
+<button onclick="mostrar(mov)">MOV</button>
+<button onclick="mostrar(cmp)">CMP</button>
+<button onclick="mostrar(lea)">LEA</button>
+<button onclick="mostrar(xchg)">XCHG</button>
+</div></div>`;
+
+/* PLANTILLA */
+function plantilla(cat,titulo,def,rel,ej,notas){
+return `
+<div class="card ${cat}">
+<button class="back" onclick="regresar()">⬅ Regresar</button>
+<h2>${titulo}</h2>
+
+<b>Definición:</b><br>${def}
+
+<br><br><b>Términos relacionados:</b><br>${rel}
+
+<br><br><b>Ejemplo de uso:</b>
+<div class="code">${ej}</div>
+
+<b>Notas:</b><br>${notas}
+
+<br><br><b>Fuente:</b><br>
+Intel Corporation, <i>Intel® 64 and IA-32 Architectures Software Developer’s Manual</i>, Vol. 2A, 2023.
+</div>`;
+}
+
+var mov = plantilla("dat","MOV",
+"Transfiere un valor desde un operando fuente hacia un operando destino. La operación copia el dato sin modificar el operando fuente, permitiendo la manipulación de registros y memoria dentro del flujo del programa.",
+"LEA (carga direcciones en lugar de valores), XCHG (intercambia valores), PUSH (envía datos a la pila)",
+"MOV AX, BX ; Copia el contenido del registro BX en AX sin alterar el valor original de BX",
+"No modifica banderas. No permite operaciones memoria a memoria. Es una de las instrucciones más utilizadas en la transferencia de datos.");
+
+var add = plantilla("arit","ADD",
+"Realiza una suma aritmética entre el operando destino y el operando fuente, almacenando el resultado en el destino. Es fundamental en cálculos y acumulaciones.",
+"SUB (operación inversa), INC (incremento optimizado), ADC (suma con acarreo)",
+"ADD AX, 5 ; Suma el valor inmediato 5 al contenido actual del registro AX y almacena el resultado en AX",
+"Afecta CF, ZF, SF, OF y PF. Puede generar desbordamiento si el resultado excede la capacidad del registro.");
+
+var sub = plantilla("arit","SUB",
+"Ejecuta una operación de sustracción restando el operando fuente del destino y almacenando el resultado en el destino.",
+"ADD (operación inversa), DEC (decremento), CMP (comparación basada en resta)",
+"SUB AX, 2 ; Resta el valor 2 al contenido del registro AX y guarda el resultado en el mismo registro",
+"Afecta banderas CF, ZF, SF y OF. Se utiliza también como base para comparaciones.");
+
+var inc = plantilla("arit","INC",
+"Incrementa en una unidad el valor del operando destino, optimizando operaciones repetitivas. Es ampliamente utilizada en contadores y estructuras iterativas.",
+"ADD (suma general), DEC (operación inversa)",
+"INC AX ; Incrementa en 1 el valor contenido en el registro AX",
+"No afecta la bandera CF. Es más eficiente que ADD para incrementos simples.");
+
+var dec = plantilla("arit","DEC",
+"Decrementa en una unidad el valor del operando destino. Se utiliza comúnmente en ciclos descendentes y conteos.",
+"SUB (resta general), INC (operación inversa)",
+"DEC AX ; Disminuye en 1 el valor almacenado en el registro AX",
+"No modifica la bandera CF. Utilizado en ciclos y conteos.");
+
+var mul = plantilla("arit","MUL",
+"Realiza una multiplicación sin signo entre el acumulador implícito y el operando especificado. El resultado puede ocupar más bits que los operandos originales.",
+"IMUL (multiplicación con signo)",
+"MUL BX ; Multiplica el contenido del acumulador AX por BX y almacena el resultado en AX o en DX:AX según el tamaño",
+"El resultado se almacena en AX o DX:AX dependiendo del tamaño. Puede generar desbordamiento.");
+
+var divi = plantilla("arit","DIV",
+"Divide el valor del acumulador entre el operando especificado, generando un cociente y un residuo.",
+"IDIV (división con signo)",
+"DIV BX ; Divide el valor contenido en AX entre BX, guardando el cociente y el residuo en registros específicos",
+"Puede provocar excepción si el divisor es cero o si el resultado no cabe en el registro destino.");
+
+var jmp = plantilla("ctrl","JMP",
+"Transfiere el flujo de ejecución a otra dirección del programa de forma incondicional.",
+"JE (salto condicional), CALL (salto con retorno)",
+"JMP etiqueta ; Transfiere la ejecución del programa a la dirección indicada por la etiqueta sin evaluar condiciones",
+"No depende de banderas. Puede ser salto corto, cercano o lejano.");
+
+var je = plantilla("ctrl","JE",
+"Realiza un salto si la bandera Zero (ZF) está activada, indicando igualdad en una comparación previa.",
+"CMP (genera condición), JNE (condición opuesta)",
+"JE etiqueta ; Salta a la etiqueta especificada si el resultado de la comparación previa indica igualdad (ZF = 1)",
+"Se utiliza después de CMP. Depende del estado de ZF.");
+
+var jne = plantilla("ctrl","JNE",
+"Realiza un salto si la bandera Zero (ZF) no está activada.",
+"CMP (establece condición), JE (condición contraria)",
+"JNE etiqueta ; Salta a la etiqueta si los valores comparados no son iguales (ZF = 0)",
+"Se ejecuta cuando los valores comparados son diferentes.");
+
+var loop = plantilla("ctrl","LOOP",
+"Decrementa el registro CX y realiza un salto si el valor no es cero, implementando estructuras de repetición automáticamente.",
+"JMP (salto general), DEC (decremento manual)",
+"LOOP etiqueta ; Decrementa CX en 1 y salta a la etiqueta mientras CX sea diferente de cero",
+"Usa CX automáticamente. No afecta otras banderas.");
+
+var push = plantilla("pila","PUSH",
+"Coloca un valor en la pila decrementando el puntero de pila (SP), almacenando datos temporalmente. Es esencial en subrutinas.",
+"POP (extracción), CALL (usa pila)",
+"PUSH AX ; Inserta el contenido del registro AX en la pila y decrementa el puntero SP",
+"Sigue estructura LIFO. Reduce SP antes de almacenar el valor.");
+
+var pop = plantilla("pila","POP",
+"Extrae el valor superior de la pila y lo almacena en el operando destino.",
+"PUSH (inserción), RET (uso en retorno)",
+"POP AX ; Extrae el valor superior de la pila y lo guarda en el registro AX",
+"Incrementa SP después de recuperar el valor.");
+
+var call = plantilla("pila","CALL",
+"Transfiere el control a una subrutina almacenando la dirección de retorno en la pila.",
+"RET (retorno), JMP (salto sin retorno)",
+"CALL etiqueta ; Guarda la dirección de retorno en la pila y transfiere la ejecución a la subrutina indicada",
+"Permite modularidad en programas. Usa pila automáticamente.");
+
+var ret = plantilla("pila","RET",
+"Devuelve el control a la dirección previamente almacenada en la pila.",
+"CALL (llamada), POP (recuperación de datos)",
+"RET ; Recupera la dirección de retorno desde la pila y continúa la ejecución del programa",
+"Finaliza subrutinas. Extrae dirección de la pila.");
+
+var andd = plantilla("log","AND",
+"Realiza una operación lógica AND bit a bit entre operandos, útil para enmascaramiento de bits.",
+"OR (unión de bits), XOR (exclusión lógica)",
+"AND AX, BX ; Realiza una operación AND bit a bit entre AX y BX y almacena el resultado en AX",
+"El resultado depende de coincidencias de bits. Afecta ZF.");
+
+var orr = plantilla("log","OR",
+"Ejecuta una operación OR bit a bit, activando bits presentes en cualquiera de los operandos.",
+"AND (intersección), XOR (diferencia lógica)",
+"OR AX, BX ; Activa los bits presentes en AX o BX y guarda el resultado en AX",
+"Modifica banderas. Utilizado para activar bits.");
+
+var xor = plantilla("log","XOR",
+"Realiza una operación OR exclusivo, estableciendo bits solo cuando son diferentes.",
+"AND, OR",
+"XOR AX, AX ; Limpia el registro AX colocándolo en cero al aplicar XOR consigo mismo",
+"Usado comúnmente para limpiar registros (resultado 0).");
+
+var nott = plantilla("log","NOT",
+"Invierte todos los bits del operando, realizando complemento a uno.",
+"XOR (alternativa para inversión parcial)",
+"NOT AX ; Invierte todos los bits del contenido del registro AX",
+"No afecta banderas.");
+
+var cmp = plantilla("dat","CMP",
+"Compara dos operandos mediante una resta interna sin almacenar el resultado, afectando únicamente las banderas.",
+"JE, JNE (usan el resultado), SUB (operación base)",
+"CMP AX, BX ; Compara AX con BX realizando una resta interna que solo afecta las banderas",
+"Modifica CF, ZF, SF. Es esencial para decisiones.");
+
+var lea = plantilla("dat","LEA",
+"Carga la dirección efectiva de un operando en un registro sin acceder al contenido de memoria.",
+"MOV (carga valores), OFFSET (direcciones)",
+"LEA AX, var ; Carga en AX la dirección de memoria de la variable sin acceder a su contenido",
+"No accede a memoria, solo calcula direcciones.");
+
+var xchg = plantilla("dat","XCHG",
+"Intercambia los valores entre dos operandos sin necesidad de almacenamiento temporal.",
+"MOV (transferencia), PUSH/POP (intercambio indirecto)",
+"XCHG AX, BX ; Intercambia los valores entre los registros AX y BX directamente",
+"No permite intercambio directo entre dos ubicaciones de memoria.");
+
+/* BIBLIO */
+var biblio = `<div class="card biblio">
+<h2>Bibliografía</h2>
+[1] Intel Corporation, <i>Intel® 64 and IA-32 Architectures Software Developer’s Manual</i>, 2023.<br><br>
+[2] D. Patterson, J. Hennessy, <i>Computer Organization and Design</i>, 2021.<br><br>
+[3] IEEE, <i>IEEE Std 610.12-1990</i>.
+</div>`;
+</script>
+
+</body>
+</html>
